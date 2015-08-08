@@ -1,0 +1,210 @@
+###############################################################################
+#
+# IAR C/C++ Compiler V6.30.2.940/W32 for MSP430           08/Jul/2015  02:05:41
+# Copyright 1996-2015 IAR Systems AB.
+# Standalone license - IAR Embedded Workbench for Texas Instruments MSP430, 8K KickStart Edition 6.30
+#
+#    __rt_version  =  3
+#    __double_size =  32
+#    __reg_r4      =  free
+#    __reg_r5      =  free
+#    __pic         =  no
+#    __core        =  430
+#    Source file   =  
+#        C:\Users\CrazySquid1\Documents\IAR workbench\program1\main.c
+#    Command line  =  
+#        "C:\Users\CrazySquid1\Documents\IAR workbench\program1\main.c" -lCN
+#        "C:\Users\CrazySquid1\Documents\IAR workbench\program1\Debug\List\" -o
+#        "C:\Users\CrazySquid1\Documents\IAR workbench\program1\Debug\Obj\"
+#        --no_cse --no_unroll --no_inline --no_code_motion --no_tbaa --debug
+#        -D__MSP430F2274__ -e --double=32 --dlib_config "C:\Program Files
+#        (x86)\IAR Systems\Embedded Workbench 7.2\430\lib\dlib\dl430fn.h" -Ol
+#        --segment __data16=DATA16 --segment __data20=DATA20
+#    List file     =  
+#        C:\Users\CrazySquid1\Documents\IAR
+#        workbench\program1\Debug\List\main.lst
+#    Object file   =  
+#        C:\Users\CrazySquid1\Documents\IAR
+#        workbench\program1\Debug\Obj\main.r43
+#
+###############################################################################
+
+C:\Users\CrazySquid1\Documents\IAR workbench\program1\main.c
+      1          #include "msp430x22x4.h"
+
+   \                                 In  segment DATA16_AN, at 0x56
+   \   unsigned char volatile DCOCTL
+   \                     DCOCTL:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x57
+   \   unsigned char volatile BCSCTL1
+   \                     BCSCTL1:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x53
+   \   unsigned char volatile BCSCTL3
+   \                     BCSCTL3:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x21
+   \   unsigned char volatile P1OUT
+   \                     P1OUT:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x22
+   \   unsigned char volatile P1DIR
+   \                     P1DIR:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x120
+   \   unsigned short volatile WDTCTL
+   \                     WDTCTL:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_AN, at 0x10fc
+   \   unsigned char const volatile CALDCO_8MHZ
+   \                     CALDCO_8MHZ:
+   \   000000                DS8 1
+
+   \                                 In  segment DATA16_AN, at 0x10fd
+   \   unsigned char const volatile CALBC1_8MHZ
+   \                     CALBC1_8MHZ:
+   \   000000                DS8 1
+      2          
+      3          //volatile to prevent optimization
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      4          volatile unsigned int i;
+   \                     i:
+   \   000000                DS8 2
+
+   \                                 In  segment DATA16_Z, align 2, align-sorted
+   \   000000                REQUIRE ?cstart_init_zero
+      5          volatile unsigned int count;
+   \                     count:
+   \   000000                DS8 2
+      6          
+      7          void configureClocks();
+      8          
+      9          
+
+   \                                 In  segment CODE, align 2
+     10          void main( void )
+   \                     main:
+     11          {
+     12            // Stop watchdog timer to prevent idle time out
+     13            WDTCTL = WDTPW + WDTHOLD;
+   \   000000   B240805A2001 MOV.W   #0x5a80, &0x120
+     14            //set the clock speed
+     15            configureClocks();
+   \   000006   B012....     CALL    #configureClocks
+     16            
+     17            //set P1.0 to output direction
+     18            P1DIR ^= BIT0 + BIT1;
+   \   00000A   F2E003002200 XOR.B   #0x3, &0x22
+     19            P1OUT = 0x00;
+   \   000010   C2432100     MOV.B   #0x0, &0x21
+     20            P1OUT |= BIT0;
+   \   000014   D2D32100     BIS.B   #0x1, &0x21
+     21            
+     22            for(;;)
+     23            { 
+     24              //turn on the pin
+     25              P1OUT ^= BIT0 + BIT1;
+   \                     ??main_2:
+   \   000018   F2E003002100 XOR.B   #0x3, &0x21
+     26              
+     27              //delay
+     28              count = 20;
+   \   00001E   B2401400.... MOV.W   #0x14, &count
+     29              do
+     30              {
+     31                count--;
+   \                     ??main_1:
+   \   000024   B253....     ADD.W   #0xffff, &count
+     32                i = 50000;
+   \   000028   B24050C3.... MOV.W   #0xc350, &i
+     33                do
+     34                {
+     35                  i--;
+   \                     ??main_0:
+   \   00002E   B253....     ADD.W   #0xffff, &i
+     36                }
+     37                while(i != 0);
+   \   000032   8293....     CMP.W   #0x0, &i
+   \   000036   FB23         JNE     ??main_0
+     38              }
+     39              while(count != 0);
+   \   000038   8293....     CMP.W   #0x0, &count
+   \   00003C   F323         JNE     ??main_1
+   \   00003E   EC3F         JMP     ??main_2
+   \   000040                REQUIRE WDTCTL
+   \   000040                REQUIRE P1DIR
+   \   000040                REQUIRE P1OUT
+     40            }
+     41          }
+     42          
+     43          
+
+   \                                 In  segment CODE, align 2
+     44          void configureClocks()
+   \                     configureClocks:
+     45          {
+     46            //set Digitally Controlled Oscillator (DCO)
+     47            //to 8MHz (this is sets the CPU clock speed to 8MHz)
+     48            DCOCTL = CALDCO_8MHZ;
+   \   000000   D242FC105600 MOV.B   &0x10fc, &0x56
+     49            
+     50            //set ACLK to 8MHz
+     51            BCSCTL1 = CALBC1_8MHZ;
+   \   000006   D242FD105700 MOV.B   &0x10fd, &0x57
+     52            
+     53            // Set LFXT1 (BCSCTL3) to internal Very Low Frequency Clock (VLOCLK) @ 12kHz
+     54            BCSCTL3 |= LFXT1S_2;
+   \   00000C   F2D020005300 BIS.B   #0x20, &0x53
+     55          }
+   \   000012   3041         RET
+   \   000014                REQUIRE DCOCTL
+   \   000014                REQUIRE CALDCO_8MHZ
+   \   000014                REQUIRE BCSCTL1
+   \   000014                REQUIRE CALBC1_8MHZ
+   \   000014                REQUIRE BCSCTL3
+
+   Maximum stack usage in bytes:
+
+   CSTACK Function
+   ------ --------
+      2   configureClocks
+      2   main
+        2   -> configureClocks
+
+
+   Segment part sizes:
+
+   Bytes  Function/Label
+   -----  --------------
+       1  BCSCTL1
+       1  BCSCTL3
+       1  CALBC1_8MHZ
+       1  CALDCO_8MHZ
+       1  DCOCTL
+       1  P1DIR
+       1  P1OUT
+       2  WDTCTL
+      20  configureClocks
+       2  count
+       2  i
+      64  main
+
+ 
+ 84 bytes in segment CODE
+  9 bytes in segment DATA16_AN
+  4 bytes in segment DATA16_Z
+ 
+ 84 bytes of CODE memory
+  4 bytes of DATA memory (+ 9 bytes shared)
+
+Errors: none
+Warnings: none
